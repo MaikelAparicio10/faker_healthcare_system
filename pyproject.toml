@@ -1,0 +1,18 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "faker_healthcare_system"
+authors = [{name = "Maikel Aparicio", email = "maikel.aparicio@theksquaregroup.com"}]
+readme = "README.md"
+license = {file = "LICENSE"}
+classifiers = ["License :: OSI Approved :: MIT License"]
+dynamic = ["version", "description"]
+description-file = "README.md"
+
+[project.urls]
+Home = "https://github.com/"
+
+[project.requires-extra]
+test = ["pytest", "pytest-cov", "tox"]
