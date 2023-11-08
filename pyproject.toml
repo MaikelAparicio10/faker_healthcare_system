@@ -1,6 +1,6 @@
 [build-system]
-requires = ["flit_core >=3.2,<4"]
-build-backend = "flit_core.buildapi"
+requires = ["Faker>=19.13.0"]
+#build-backend = "flit_core.buildapi"
 
 [project]
 name = "faker_healthcare_system"
