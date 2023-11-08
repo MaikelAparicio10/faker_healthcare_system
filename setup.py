@@ -35,7 +35,7 @@ setup(
     version='0.4',
     license='MIT',
     description='Provider of music-related data for Faker module',
-    long_description=README,
+    # long_description=README,
     author='Maikel Aparicio',
     author_email='maikel.aparicio@theksquaregroup.com',
     url='https://github.com/MaikelAparicio10/faker_healthcare_system',
@@ -51,5 +51,5 @@ setup(
     },
     python_requires='>=3.6',
     install_requires=['Faker>=19.13.0'],
-    test_requires=['pytest>=6.2', 'pytest-cov>=2.12.0'],
+    # test_requires=['pytest>=6.2', 'pytest-cov>=2.12.0'],
 )
