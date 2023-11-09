@@ -41,7 +41,7 @@ class PersonNameProvider(BaseProvider):
 
 fake = Faker()
 fake.add_provider(PersonNameProvider)
-Faker.seed(12)
+Faker.seed(0)
 
 fake_person_names = [fake.person_object_by_gender(random.choice(['F', 'M'])) for _ in range(10)]
 for i in fake_person_names:
