@@ -11,13 +11,13 @@ here = abspath(dirname(__file__))
 try:
     README = open(join(here, 'README.md')).read()
 except:
-    README = 'An add-on provider for the Python Faker module to generate random and/or fake data for music-related categories. See https://github.com/jeffwright13/faker_music.'
+    README = 'An add-on provider for the Python Faker module to generate random and/or fake data.'
 
 CLASSIFIERS = [
     # complete classifier list: http://pypi.python.org/pypi?%3Aaction=list_classifiers
     'Development Status :: 4 - Beta',
     'Intended Audience :: Developers',
-    'License :: MIT',
+    'License :: OSI Approved :: MIT License',
     'Operating System :: Unix',
     'Operating System :: POSIX',
     'Operating System :: Microsoft :: Windows',
@@ -34,22 +34,26 @@ CLASSIFIERS = [
 
 setup(
     name='faker_healthcare_system',
-    version='0.4',
+    version='0.1.7',
     license='MIT',
-    description='Provider of music-related data for Faker module',
+    description='Health system related data provider for Faker module',
     long_description=README,
+    long_description_content_type='text/markdown',
     author='Maikel Aparicio',
     author_email='maikel.aparicio@theksquaregroup.com',
     url='https://github.com/MaikelAparicio10/faker_healthcare_system',
     packages=find_packages('faker_healthcare_system'),
     package_dir={'': 'faker_healthcare_system'},
+    package_data={"": ["*.csv"]},
+    data_files=[('assets', ['assets/nucc_taxonomy_231.csv'])],
     py_modules=[splitext(basename(path))[0] for path in glob('faker_healthcare_system/*.py')],
     include_package_data=True,
     zip_safe=False,
     classifiers=CLASSIFIERS,
     project_urls={
-        'Changelog': 'CHANGELOG.rst',
-        'Issue Tracker': 'https://github.com/MaikelAparicio10/faker_healthcare_system',
+        'Source Code': 'https://github.com/MaikelAparicio10/faker_healthcare_system',
+        'Bug Reports': 'https://github.com/MaikelAparicio10/faker_healthcare_system/issues',
+        'Say Thanks!': 'https://github.com/MaikelAparicio10/faker_healthcare_system',
     },
     python_requires='>=3.6',
     install_requires=['Faker>=19.13.0'],
