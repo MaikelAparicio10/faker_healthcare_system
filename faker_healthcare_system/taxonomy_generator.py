@@ -1,10 +1,11 @@
 import csv
+import importlib.resources
 import random
 from dataclasses import dataclass
 from typing import List, Optional
 
 
-@dataclass
+@dataclass(frozen=True)
 class TaxonomyEntity:
     code: str
     classification: str
@@ -15,7 +16,7 @@ class TaxonomyEntity:
 
 
 class TaxonomyGenerator:
-    TAXONOMY_CSV_DIR = "../assets/nucc_taxonomy_231.csv"
+    TAXONOMY_CSV_DIR = importlib.resources.files('assets') / 'nucc_taxonomy_231.csv'
 
     def __init__(self):
         self.taxonomy_data, self.taxonomy_individual_data = self.load_taxonomy_data()
@@ -65,5 +66,11 @@ class TaxonomyGenerator:
     def get_taxonomies(self, quantity: int) -> List[TaxonomyEntity]:
         return [self.get_random_taxonomy() for _ in range(quantity)]
 
-    def get_taxonomies_individuals(self, quantity: int) -> List[dict]:
-        return [self.get_random_individual_taxonomy().__dict__ for _ in range(quantity)]
+    def get_taxonomies_individuals(self, quantity: int) -> List[TaxonomyEntity]:
+        return [self.get_random_individual_taxonomy() for _ in range(quantity)]
+
+    def get_uniques_taxonomies_individuals(self, quantity: int) -> List[dict]:
+        unique_taxonomies = set()
+        while len(unique_taxonomies) < quantity:
+            unique_taxonomies.add(self.get_random_individual_taxonomy())
+        return [taxonomy.__dict__ for taxonomy in list(unique_taxonomies)]
