@@ -178,7 +178,7 @@ Standard version [23.1, 7/1/23](https://www.nucc.org/index.php/code-sets-mainmen
 
 ### DEA
 ``` python
->> female_person = fake.dea()
+>> fake.dea()
 {
     'number': 'M5490877',
     'allow_prescribe': True, 
@@ -191,13 +191,13 @@ Standard version [23.1, 7/1/23](https://www.nucc.org/index.php/code-sets-mainmen
 
 ### Professional degree school
 ``` python
->> female_person = fake.professional_degree_school()
+>> fake.professional_degree_school()
 Johns Hopkins University - Johns Hopkins School of Medicine
 ```
 
 ### Language
 ``` python
->> female_person = fake.practitioner_language()
+>> fake.practitioner_language()
 {
     'code': 'TR', 
     'description': 'Turkish', 
@@ -208,7 +208,7 @@ Johns Hopkins University - Johns Hopkins School of Medicine
 ### Languages
 #### Generates the specified number of languages, plus English
 ``` python
->> female_person = fake.practitioner_languages_plus_english(2)
+>> fake.practitioner_languages_plus_english(2)
 [
     {
         'code': 'SM', 
@@ -230,7 +230,7 @@ Johns Hopkins University - Johns Hopkins School of Medicine
 
 ### Ethnicity
 ``` python
->> female_person = fake.practitioner_ethnicity_code()
+>> fake.practitioner_ethnicity_code()
 {   
     'code': 'J', 
     'description': 'JAPANESE'
@@ -239,13 +239,13 @@ Johns Hopkins University - Johns Hopkins School of Medicine
 
 ### Gender restriccion
 ``` python
->> female_person = fake.gender_restriction()
+>> fake.gender_restriction()
 F
 ```
 
 ### Malpractice
 ``` python
->> female_person = fake.malpractice()
+>> fake.malpractice()
 {
     'insurance': 'Fairway Physicians Ins. Co.', 
     'insurance_policy_number': 5, 
@@ -255,7 +255,7 @@ F
 
 ### License
 ``` python
->> female_person = fake.license()
+>> fake.license()
 {
     'license': 'I93615979', 
     'state': 'Dakota del Sur', 
@@ -264,10 +264,23 @@ F
     'end_date': datetime.date(2024, 3, 21)
 }
 ```
+### Identifier
+``` python
+>> fake.identifier()
+{
+    'code': 6950, 
+    'desc': 'Medicare', 
+    'issuer': 'pZGG', 
+    'identifier': '59333', 
+    'state': 'Misuri'
+}
+```
+
+
 
 ### Individual
 ``` python
->> female_person = fake.individual_object()
+>> fake.individual_object()
 {
     'npi': 465929309,
     'tin': 155728978, 

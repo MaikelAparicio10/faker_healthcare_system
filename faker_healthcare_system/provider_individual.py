@@ -11,6 +11,58 @@ from faker_healthcare_system.taxonomy_generator import TaxonomyGenerator
 
 class IndividualProvider(BaseProvider):
     __taxonomy = TaxonomyGenerator()
+    us_states = [
+        "Alabama",
+        "Alaska",
+        "Arizona",
+        "Arkansas",
+        "California",
+        "Colorado",
+        "Connecticut",
+        "Delaware",
+        "Florida",
+        "Georgia",
+        "Hawái",
+        "Idaho",
+        "Illinois",
+        "Indiana",
+        "Iowa",
+        "Kansas",
+        "Kentucky",
+        "Luisiana",
+        "Maine",
+        "Maryland",
+        "Massachusetts",
+        "Míchigan",
+        "Minnesota",
+        "Misisipi",
+        "Misuri",
+        "Montana",
+        "Nebraska",
+        "Nevada",
+        "Nuevo Hampshire",
+        "Nueva Jersey",
+        "Nuevo México",
+        "Nueva York",
+        "Carolina del Norte",
+        "Dakota del Norte",
+        "Ohio",
+        "Oklahoma",
+        "Oregón",
+        "Pensilvania",
+        "Rhode Island",
+        "Carolina del Sur",
+        "Dakota del Sur",
+        "Tennessee",
+        "Texas",
+        "Utah",
+        "Vermont",
+        "Virginia",
+        "Washington",
+        "Virginia Occidental",
+        "Wisconsin",
+        "Wyoming",
+    ]
 
     def npi(self) -> int:
         return self.generator.random_number(digits=9, fix_len=True)
@@ -520,6 +572,15 @@ class IndividualProvider(BaseProvider):
             'end_date': start_date + timedelta(365 * self.generator.random_int(min=1, max=4)),
         }
 
+    def identifier(self) -> dict:
+        return {
+            'code': self.generator.random_int(),
+            'desc': random.choice(['Other (non-Medicare)', 'Medicare']),
+            'issuer': self.generator.bothify(text='????'),
+            'identifier': self.generator.bothify(text='#####'),
+            'state': random.choice(self.us_states)
+        }
+
     def individual_object(self) -> dict:
         gender = self.gender()
         person_name: dict = self.generator.person_name_by_gender(gender)
@@ -529,6 +590,7 @@ class IndividualProvider(BaseProvider):
         credential = random.choice(["DMD", "PhD", "MD", "Dr"])
         sole_proprietor = random.choice(["YES", "NO"])
         ethnicity_code = self.practitioner_ethnicity_code()['code']
+        identifier = self.identifier()
         return {
             'npi': self.npi(),
             'tin': self.tin(),
@@ -543,7 +605,7 @@ class IndividualProvider(BaseProvider):
             "main_office_address": self.address_with_purpose(purpose='Main Office'),
             "taxonomies": self.individual_unique_taxonomies(4),
             "licenses": [self.license() for _ in range(4)],
-            "identifiers": "",
+            "identifiers": identifier,
             "taxonomy_qualification": "",
             "taxonomy_endpoints": "",
             "schedule": "",
@@ -564,13 +626,9 @@ class IndividualProvider(BaseProvider):
 
 fake = Faker()
 fake.add_provider(IndividualProvider)
-Faker.seed(123)
-
-
-print(fake.license())
+Faker.seed(153)
 
 fake_person_names = [fake.individual_object() for _ in range(1)]
 for i in fake_person_names:
     print(i)
-    print(i['taxonomies'])
-
+    print(i['identifiers'])
