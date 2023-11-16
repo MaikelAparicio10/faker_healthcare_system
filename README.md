@@ -314,6 +314,29 @@ F
 }
 ```
 
+### Endpoint
+``` python
+>> fake.endpoint()
+{
+    'endpointType': 'CONNECT', 
+    'endpointTypeDescription': 'CONNECT URL', 
+    'endpoint': 'http://thompson-young.com/blog/appregister.htm', 
+    'endpointDescription': '', 
+    'affiliation': 'N', 
+    'use': 'DIRECT', 
+    'useDescription': 'Direct', 
+    'contentType': 'OTHER', 
+    'contentTypeDescription': 'Communication', 
+    'contentOtherDescription': 'Communication', 
+    'country_code': 'US', 
+    'country_name': 'United States', 
+    'address_1': '628 Banks Stravenue\nCarolynfort, DC 08813', 
+    'city': 'Kylemouth', 
+    'state': 'Vermont', 
+    'postal_code': '71465'
+}
+```
+
 
 
 ### Individual

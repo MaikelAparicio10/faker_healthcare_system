@@ -601,6 +601,44 @@ class IndividualProvider(BaseProvider):
                          'taxonomy': self.taxonomy() if taxonomy is None else taxonomy, 'facility_type': 10}
         return qualification
 
+    def endpoint(self) -> dict:
+        endpoint_type = {
+            'DIRECT': 'Direct Messaging Address',
+            'CONNECT': 'CONNECT URL',
+            'OTHERS': 'Other URL',
+            'FHIR': 'FHIR URL',
+            'SOAP': 'SOAP URL',
+        }
+        use = {
+            'DIRECT': 'Direct',
+            'HIE': 'Health Information Exchange (HIE)',
+            'OTHER': 'Other'
+        }
+        content = random.choice(['OTHER', 'CSV'])
+        content_other_description = random.choice(
+            ['OTHER', 'CSV', 'EMAIL', 'Communication', 'Standard Direct Functionality', 'unknown', 'website',
+             'CDA/CCD/TXT', 'CDA/PDF/TXT', 'Excel file'])
+        endpoint_code: str = random.choice(list(endpoint_type.keys()))
+        use_code: str = random.choice(list(use.keys()))
+        return {
+            'endpointType': endpoint_code,
+            'endpointTypeDescription': endpoint_type[endpoint_code],
+            'endpoint': self.generator.ascii_company_email() if endpoint_code == 'DIRECT' else self.generator.uri(),
+            'endpointDescription': '',
+            'affiliation': random.choice(['Y', 'N']),
+            'use': use_code,
+            'useDescription': use[use_code],
+            'contentType': content,
+            'contentTypeDescription': content_other_description,
+            'contentOtherDescription': content_other_description,
+            'country_code': 'US',
+            'country_name': 'United States',
+            'address_1': self.generator.address(),
+            'city': self.generator.city(),
+            'state': random.choice(self.us_states),
+            'postal_code': self.generator.postcode(),
+        }
+
     def __taxonomy_qualification_by_taxonomies(self, taxomonies: List[dict]) -> List[dict]:
         qualifications: List[dict] = []
         for taxonomy in taxomonies:
@@ -635,7 +673,7 @@ class IndividualProvider(BaseProvider):
             "licenses": [self.license() for _ in range(4)],
             "identifiers": identifier,
             "taxonomy_qualification": taxonomy_qualification,
-            "taxonomy_endpoints": "",
+            "taxonomy_endpoints": self.endpoint(),
             "schedule": "",
             'credential': credential,
             'sole_proprietor': sole_proprietor,
@@ -661,4 +699,4 @@ print(fake.board())
 fake_person_names = [fake.individual_object() for _ in range(1)]
 for i in fake_person_names:
     print(i)
-    print(i['taxonomy_qualification'])
+    print(i['taxonomy_endpoints'])
