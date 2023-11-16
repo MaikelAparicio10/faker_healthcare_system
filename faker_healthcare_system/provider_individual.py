@@ -589,19 +589,23 @@ class IndividualProvider(BaseProvider):
             'expiration_date': start_date + timedelta(365 * self.generator.random_int(min=1, max=4)),
         }
 
-    def taxonomy_qualification(self) -> dict:
+    def taxonomy_qualification(self, taxonomy: dict | None = None) -> dict:
         start_date = self.generator.date_this_decade()
-        return {
-            'board': self.board(),
-            'intership_start_date': start_date,
-            'intership_expiration_date': start_date + timedelta(365 * self.generator.random_int(min=1, max=4)),
-            'residency_start_date': start_date,
-            'residency_expiration_date': start_date + timedelta(365 * self.generator.random_int(min=1, max=4)),
-            'fellowship_start_date': start_date,
-            'fellowship_expiration_date': start_date + timedelta(365 * self.generator.random_int(min=1, max=4)),
-            'taxonomy': self.taxonomy(),
-            'facility_type': 10,
-        }
+        qualification = {'board': self.board(), 'intership_start_date': start_date,
+                         'intership_expiration_date': start_date + timedelta(
+                             365 * self.generator.random_int(min=1, max=4)), 'residency_start_date': start_date,
+                         'residency_expiration_date': start_date + timedelta(
+                             365 * self.generator.random_int(min=1, max=4)), 'fellowship_start_date': start_date,
+                         'fellowship_expiration_date': start_date + timedelta(
+                             365 * self.generator.random_int(min=1, max=4)),
+                         'taxonomy': self.taxonomy() if taxonomy is None else taxonomy, 'facility_type': 10}
+        return qualification
+
+    def __taxonomy_qualification_by_taxonomies(self, taxomonies: List[dict]) -> List[dict]:
+        qualifications: List[dict] = []
+        for taxonomy in taxomonies:
+            qualifications.append(self.taxonomy_qualification(taxonomy))
+        return qualifications
 
     def individual_object(self) -> dict:
         gender = self.gender()
@@ -613,7 +617,8 @@ class IndividualProvider(BaseProvider):
         sole_proprietor = random.choice(["YES", "NO"])
         ethnicity_code = self.practitioner_ethnicity_code()['code']
         identifier = self.identifier()
-        taxonomy_qualification = self.taxonomy_qualification()
+        taxonomies: List[dict] = self.individual_unique_taxonomies(4)
+        taxonomy_qualification = self.__taxonomy_qualification_by_taxonomies(taxonomies)
         return {
             'npi': self.npi(),
             'tin': self.tin(),
@@ -626,7 +631,7 @@ class IndividualProvider(BaseProvider):
             "mailing_address": self.address_with_purpose(),
             "location_address": self.address_with_purpose(purpose='LOCATION'),
             "main_office_address": self.address_with_purpose(purpose='Main Office'),
-            "taxonomies": self.individual_unique_taxonomies(4),
+            "taxonomies": taxonomies,
             "licenses": [self.license() for _ in range(4)],
             "identifiers": identifier,
             "taxonomy_qualification": taxonomy_qualification,
