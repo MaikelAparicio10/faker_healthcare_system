@@ -276,6 +276,16 @@ F
 }
 ```
 
+### Board
+``` python
+>> fake.board()
+{
+    'status': 2, 
+    'start_date': datetime.date(2022, 1, 31), 
+    'expiration_date': datetime.date(2023, 1, 31)
+}
+```
+
 
 
 ### Individual

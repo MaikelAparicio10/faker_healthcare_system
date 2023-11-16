@@ -581,6 +581,17 @@ class IndividualProvider(BaseProvider):
             'state': random.choice(self.us_states)
         }
 
+    def board(self) -> dict:
+        start_date = self.generator.date_this_decade()
+        return {
+            'status': random.choice([1, 2, 3, 4, 5]),
+            'start_date': start_date,
+            'expiration_date': start_date + timedelta(365 * self.generator.random_int(min=1, max=4)),
+        }
+
+    def taxonomy_qualification(self) -> dict:
+        return {}
+
     def individual_object(self) -> dict:
         gender = self.gender()
         person_name: dict = self.generator.person_name_by_gender(gender)
@@ -627,6 +638,8 @@ class IndividualProvider(BaseProvider):
 fake = Faker()
 fake.add_provider(IndividualProvider)
 Faker.seed(153)
+
+print(fake.board())
 
 fake_person_names = [fake.individual_object() for _ in range(1)]
 for i in fake_person_names:
