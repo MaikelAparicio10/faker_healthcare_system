@@ -590,7 +590,18 @@ class IndividualProvider(BaseProvider):
         }
 
     def taxonomy_qualification(self) -> dict:
-        return {}
+        start_date = self.generator.date_this_decade()
+        return {
+            'board': self.board(),
+            'intership_start_date': start_date,
+            'intership_expiration_date': start_date + timedelta(365 * self.generator.random_int(min=1, max=4)),
+            'residency_start_date': start_date,
+            'residency_expiration_date': start_date + timedelta(365 * self.generator.random_int(min=1, max=4)),
+            'fellowship_start_date': start_date,
+            'fellowship_expiration_date': start_date + timedelta(365 * self.generator.random_int(min=1, max=4)),
+            'taxonomy': self.taxonomy(),
+            'facility_type': 10,
+        }
 
     def individual_object(self) -> dict:
         gender = self.gender()
@@ -602,6 +613,7 @@ class IndividualProvider(BaseProvider):
         sole_proprietor = random.choice(["YES", "NO"])
         ethnicity_code = self.practitioner_ethnicity_code()['code']
         identifier = self.identifier()
+        taxonomy_qualification = self.taxonomy_qualification()
         return {
             'npi': self.npi(),
             'tin': self.tin(),
@@ -617,7 +629,7 @@ class IndividualProvider(BaseProvider):
             "taxonomies": self.individual_unique_taxonomies(4),
             "licenses": [self.license() for _ in range(4)],
             "identifiers": identifier,
-            "taxonomy_qualification": "",
+            "taxonomy_qualification": taxonomy_qualification,
             "taxonomy_endpoints": "",
             "schedule": "",
             'credential': credential,
@@ -644,4 +656,4 @@ print(fake.board())
 fake_person_names = [fake.individual_object() for _ in range(1)]
 for i in fake_person_names:
     print(i)
-    print(i['identifiers'])
+    print(i['taxonomy_qualification'])

@@ -286,6 +286,34 @@ F
 }
 ```
 
+### Taxonomy qualification
+``` python
+>> fake.taxonomy_qualification()
+{
+    'board': {
+                'status': 5, 
+                'start_date': datetime.date(2023, 8, 18), 
+                'expiration_date': datetime.date(2024, 8, 17)
+             }, 
+    'intership_start_date': datetime.date(2021, 10, 16), 
+    'intership_expiration_date': datetime.date(2024, 10, 15), 
+    'residency_start_date': datetime.date(2021, 10, 16), 
+    'residency_expiration_date': datetime.date(2023, 10, 16), 
+    'fellowship_start_date': datetime.date(2021, 10, 16), 
+    'fellowship_expiration_date': datetime.date(2024, 10, 15), 
+    'taxonomy': 
+                {
+                    'code': '103T00000X', 
+                    'classification': 'Psychologist', 
+                    'specialization': '', 
+                    'section': 'Individual', 
+                    'grouping': 'Behavioral Health & Social Service Providers', 
+                    'display_name': 'Psychologist'
+                }, 
+    'facility_type': 10
+}
+```
+
 
 
 ### Individual
