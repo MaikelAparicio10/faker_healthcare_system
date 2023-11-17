@@ -286,6 +286,25 @@ F
 }
 ```
 
+### Working hours
+``` python
+>> fake.working_hours()
+10:00-13:00
+```
+### Weekly working hours
+``` python
+>> fake.weekly_working_hours()
+{
+    'Monday': '10:00-13:00', 
+    'Tuesday': '7:00-13:00', 
+    'Wednesday': '10:00-20:00', 
+    'Thursday': '9:00-17:00', 
+    'Friday': '8:00-18:00', 
+    'Saturday': 'CLOSED', 
+    'Sunday': 'CLOSED'
+}
+```
+
 ### Taxonomy qualification
 ``` python
 >> fake.taxonomy_qualification()

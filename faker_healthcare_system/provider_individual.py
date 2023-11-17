@@ -191,6 +191,22 @@ class IndividualProvider(BaseProvider):
             'postal_code': self.generator.postcode(),
         }
 
+    def working_hours(self) -> str:
+        start_hour = self.generator.random_int(min=7, max=10)
+        end_hour = self.generator.random_int(min=start_hour + 2, max=20)
+        return f'{start_hour}:00-{end_hour}:00'
+
+    def weekly_working_hours(self) -> dict:
+        return {
+            'Monday': self.working_hours(),
+            'Tuesday': self.working_hours(),
+            'Wednesday': self.working_hours(),
+            'Thursday': self.working_hours(),
+            'Friday': self.working_hours(),
+            'Saturday': random.choice(['CLOSED', self.working_hours()]),
+            'Sunday': 'CLOSED',
+        }
+
     def __taxonomy_qualification_by_taxonomies(self, taxomonies: List[dict]) -> List[dict]:
         qualifications: List[dict] = []
         for taxonomy in taxomonies:
@@ -226,7 +242,8 @@ class IndividualProvider(BaseProvider):
             "identifiers": identifier,
             "taxonomy_qualification": taxonomy_qualification,
             "taxonomy_endpoints": self.endpoint(),
-            "schedule": "",
+            "office_hours": self.weekly_working_hours(),
+            "telehealth_hours": self.weekly_working_hours(),
             'credential': credential,
             'sole_proprietor': sole_proprietor,
             'gender': gender,
@@ -246,7 +263,7 @@ fake = Faker()
 fake.add_provider(IndividualProvider)
 Faker.seed(153)
 
-print(fake.individual_taxonomies(1))
+print(fake.weekly_working_hours())
 
 fake_person_names = [fake.individual_object() for _ in range(1)]
 for i in fake_person_names:
