@@ -1,84 +1,15 @@
-import csv
-import importlib.resources
 import random
 from collections import OrderedDict
-from dataclasses import dataclass
 from datetime import date, timedelta
-from typing import List, Optional
+from typing import List
 
 from faker import Faker
 from faker.providers import BaseProvider
 
-
-@dataclass(frozen=True)
-class TaxonomyEntity:
-    code: str
-    classification: str
-    specialization: str
-    section: str
-    grouping: str
-    display_name: str
-
-
-class TaxonomyGenerator:
-    TAXONOMY_CSV_DIR = importlib.resources.files('assets') / 'nucc_taxonomy_231.csv'
-
-    def __init__(self):
-        self.taxonomy_data, self.taxonomy_individual_data = self.load_taxonomy_data()
-
-    def load_taxonomy_data(self):
-        taxonomy_data = {}
-        taxonomy_only_individual_data = {}
-        try:
-            with open(self.TAXONOMY_CSV_DIR, newline="") as csv_file:
-                reader = csv.reader(csv_file, delimiter=",")
-                next(reader)
-                for row in reader:
-                    code = row[0]
-                    taxonomy = TaxonomyEntity(
-                        code=row[0],
-                        grouping=row[1],
-                        classification=row[2],
-                        specialization=row[3],
-                        display_name=row[6],
-                        section=row[7],
-                    )
-                    if taxonomy.section.lower() == 'individual':
-                        taxonomy_only_individual_data[code] = taxonomy
-                    taxonomy_data[code] = taxonomy
-        except FileNotFoundError:
-            print(f"File '{self.TAXONOMY_CSV_DIR}' could not be found.")
-        return taxonomy_data, taxonomy_only_individual_data
-
-    def get_taxonomy_codes(self) -> List[str]:
-        return list(self.taxonomy_data.keys())
-
-    def get_individuals_taxonomy_codes(self) -> List[str]:
-        return list(self.taxonomy_individual_data.keys())
-
-    def get_taxonomy_codes_by_individuals(self) -> List[str]:
-        return list(self.taxonomy_data.keys())
-
-    def find_by_code(self, code: str) -> Optional[TaxonomyEntity]:
-        return self.taxonomy_data.get(code, None)
-
-    def get_random_taxonomy(self) -> TaxonomyEntity:
-        return self.find_by_code(random.choice(self.get_taxonomy_codes()))
-
-    def get_random_individual_taxonomy(self) -> TaxonomyEntity:
-        return self.find_by_code(random.choice(self.get_individuals_taxonomy_codes()))
-
-    def get_taxonomies(self, quantity: int) -> List[TaxonomyEntity]:
-        return [self.get_random_taxonomy() for _ in range(quantity)]
-
-    def get_taxonomies_individuals(self, quantity: int) -> List[TaxonomyEntity]:
-        return [self.get_random_individual_taxonomy() for _ in range(quantity)]
-
-    def get_uniques_taxonomies_individuals(self, quantity: int) -> List[dict]:
-        unique_taxonomies = set()
-        while len(unique_taxonomies) < quantity:
-            unique_taxonomies.add(self.get_random_individual_taxonomy())
-        return [taxonomy.__dict__ for taxonomy in list(unique_taxonomies)]
+from taxonomy_generator import TaxonomyGenerator
+from constants import ADDRESS_TYPE, MEDICAL_UNIVERSITIES_USA, ISO_639_LANGUAGES, \
+    ETHNICITY, MALPRACTICE_INSURANCE, ENDPOINT_TYPE, ENDPOINT_USE, ENDPOINT_CONTENT_OTHER_DESCRIPTION, CREDENTIAL, \
+    US_STATES
 
 
 class IndividualProvider(BaseProvider):
@@ -100,8 +31,8 @@ class IndividualProvider(BaseProvider):
         return self.__taxonomy.get_random_taxonomy().__dict__
 
     def individual_taxonomies(self, quantity: int) -> List[dict]:
-        taxonomies_list = self.__taxonomy.get_taxonomies_individuals(quantity)
-        return [tax.__dict__ for tax in taxonomies_list]
+        taxonomies_list = self.__taxonomy.get_uniques_taxonomies_individuals(quantity)
+        return [tax for tax in taxonomies_list]
 
     def individual_unique_taxonomies(self, quantity: int):
         return self.__taxonomy.get_uniques_taxonomies_individuals(quantity)
@@ -128,68 +59,15 @@ class IndividualProvider(BaseProvider):
         return new_person_object
 
     def address_with_purpose(self, purpose: str = 'Mailing') -> dict:
-        address_type = ["DOM", "FGN", "MIL"]
-        us_states = [
-            "Alabama",
-            "Alaska",
-            "Arizona",
-            "Arkansas",
-            "California",
-            "Colorado",
-            "Connecticut",
-            "Delaware",
-            "Florida",
-            "Georgia",
-            "Hawái",
-            "Idaho",
-            "Illinois",
-            "Indiana",
-            "Iowa",
-            "Kansas",
-            "Kentucky",
-            "Luisiana",
-            "Maine",
-            "Maryland",
-            "Massachusetts",
-            "Míchigan",
-            "Minnesota",
-            "Misisipi",
-            "Misuri",
-            "Montana",
-            "Nebraska",
-            "Nevada",
-            "Nuevo Hampshire",
-            "Nueva Jersey",
-            "Nuevo México",
-            "Nueva York",
-            "Carolina del Norte",
-            "Dakota del Norte",
-            "Ohio",
-            "Oklahoma",
-            "Oregón",
-            "Pensilvania",
-            "Rhode Island",
-            "Carolina del Sur",
-            "Dakota del Sur",
-            "Tennessee",
-            "Texas",
-            "Utah",
-            "Vermont",
-            "Virginia",
-            "Washington",
-            "Virginia Occidental",
-            "Wisconsin",
-            "Wyoming",
-        ]
         return {
             'country_code': self.generator.current_country_code(),
             'country_name': self.generator.current_country(),
             'purpose': purpose,
-            'address_type': random.choice(address_type) if purpose != 'Main Office' else 'Physical',
+            'address_type': random.choice(ADDRESS_TYPE) if purpose != 'Main Office' else 'Physical',
             'address_1': self.generator.address(),
             'address_2': self.generator.address(),
             'city': self.generator.city(),
-            'state': random.choice(us_states),
+            'state': random.choice(US_STATES),
             'postal_code': self.generator.postcode(),
             'telephone_number': self.generator.phone_number(),
             'fax_number': self.generator.phone_number(),
@@ -207,218 +85,10 @@ class IndividualProvider(BaseProvider):
         }
 
     def professional_degree_school(self) -> str:
-        medical_universities_usa = [
-            "Harvard University - Harvard Medical School",
-            "Stanford University - Stanford School of Medicine",
-            "Johns Hopkins University - Johns Hopkins School of Medicine",
-            "Yale University - Yale School of Medicine",
-            "University of California, San Francisco - UCSF School of Medicine",
-            "Columbia University - Vagelos College of Physicians and Surgeons",
-            "University of Pennsylvania - Perelman School of Medicine",
-            "University of Chicago - Pritzker School of Medicine",
-            "Washington University in St. Louis - Washington University School of Medicine",
-            "Duke University - Duke University School of Medicine",
-            "University of Michigan - Michigan Medicine",
-            "Vanderbilt University - Vanderbilt University School of Medicine",
-            "University of California, Los Angeles - David Geffen School of Medicine",
-            "University of North Carolina at Chapel Hill - UNC School of Medicine",
-            "University of Washington - UW School of Medicine",
-            "Emory University - Emory University School of Medicine",
-            "University of Virginia - UVA School of Medicine",
-            "Baylor College of Medicine",
-            "Mayo Clinic College of Medicine and Science",
-            "University of Texas Southwestern Medical Center - UT Southwestern Medical School",
-        ]
-        return random.choice(medical_universities_usa)
+        return random.choice(MEDICAL_UNIVERSITIES_USA)
 
     def practitioner_language(self) -> dict:
-        iso_639_languages = [
-            ("Abkhazian", "ab"),
-            ("Afar", "aa"),
-            ("Afrikaans", "af"),
-            ("Akan", "ak"),
-            ("Albanian", "sq"),
-            ("Amharic", "am"),
-            ("Arabic", "ar"),
-            ("Aragonese", "an"),
-            ("Armenian", "hy"),
-            ("Assamese", "as"),
-            ("Avaric", "av"),
-            ("Avestan", "ae"),
-            ("Aymara", "ay"),
-            ("Azerbaijani", "az"),
-            ("Bambara", "bm"),
-            ("Bashkir", "ba"),
-            ("Basque", "eu"),
-            ("Belarusian", "be"),
-            ("Bengali, Bangla", "bn"),
-            ("Bihari", "bh"),
-            ("Bislama", "bi"),
-            ("Bosnian", "bs"),
-            ("Breton", "br"),
-            ("Bulgarian", "bg"),
-            ("Burmese", "my"),
-            ("Catalan", "ca"),
-            ("Chamorro", "ch"),
-            ("Chechen", "ce"),
-            ("Chichewa, Chewa, Nyanja", "ny"),
-            ("Chinese", "zh"),
-            ("Chuvash", "cv"),
-            ("Cornish", "kw"),
-            ("Corsican", "co"),
-            ("Cree", "cr"),
-            ("Croatian", "hr"),
-            ("Czech", "cs"),
-            ("Danish", "da"),
-            ("Divehi, Dhivehi, Maldivian", "dv"),
-            ("Dutch", "nl"),
-            ("Dzongkha", "dz"),
-            ("English", "en"),
-            ("Esperanto", "eo"),
-            ("Estonian", "et"),
-            ("Ewe", "ee"),
-            ("Faroese", "fo"),
-            ("Fijian", "fj"),
-            ("Finnish", "fi"),
-            ("French", "fr"),
-            ("Frisian", "fy"),
-            ("Fulah", "ff"),
-            ("Galician", "gl"),
-            ("Ganda", "lg"),
-            ("Georgian", "ka"),
-            ("German", "de"),
-            ("Greek", "el"),
-            ("Guaraní", "gn"),
-            ("Gujarati", "gu"),
-            ("Haitian, Haitian Creole", "ht"),
-            ("Hausa", "ha"),
-            ("Hebrew (modern)", "he"),
-            ("Herero", "hz"),
-            ("Hindi", "hi"),
-            ("Hiri Motu", "ho"),
-            ("Hungarian", "hu"),
-            ("Interlingua", "ia"),
-            ("Indonesian", "id"),
-            ("Interlingue", "ie"),
-            ("Irish", "ga"),
-            ("Igbo", "ig"),
-            ("Inupiaq", "ik"),
-            ("Ido", "io"),
-            ("Icelandic", "is"),
-            ("Italian", "it"),
-            ("Inuktitut", "iu"),
-            ("Japanese", "ja"),
-            ("Javanese", "jv"),
-            ("Kalaallisut, Greenlandic", "kl"),
-            ("Kannada", "kn"),
-            ("Kanuri", "kr"),
-            ("Kashmiri", "ks"),
-            ("Kazakh", "kk"),
-            ("Khmer", "km"),
-            ("Kikuyu, Gikuyu", "ki"),
-            ("Kinyarwanda", "rw"),
-            ("Kirghiz, Kyrgyz", "ky"),
-            ("Komi", "kv"),
-            ("Kongo", "kg"),
-            ("Korean", "ko"),
-            ("Kurdish", "ku"),
-            ("Kwanyama, Kuanyama", "kj"),
-            ("Latin", "la"),
-            ("Luxembourgish, Letzeburgesch", "lb"),
-            ("Ganda", "lg"),
-            ("Lingala", "ln"),
-            ("Lao", "lo"),
-            ("Lithuanian", "lt"),
-            ("Luba-Katanga", "lu"),
-            ("Latvian", "lv"),
-            ("Manx", "gv"),
-            ("Macedonian", "mk"),
-            ("Malagasy", "mg"),
-            ("Malay", "ms"),
-            ("Malayalam", "ml"),
-            ("Maltese", "mt"),
-            ("Maori", "mi"),
-            ("Marathi (Mara?hi)", "mr"),
-            ("Marshallese", "mh"),
-            ("Mongolian", "mn"),
-            ("Nauru", "na"),
-            ("Navajo, Navaho", "nv"),
-            ("Norwegian Bokmål", "nb"),
-            ("North Ndebele", "nd"),
-            ("Nepali", "ne"),
-            ("Ndonga", "ng"),
-            ("Norwegian Nynorsk", "nn"),
-            ("Norwegian", "no"),
-            ("Nuosu", "ii"),
-            ("South Ndebele", "nr"),
-            ("Occitan", "oc"),
-            ("Ojibwe, Ojibwa", "oj"),
-            ("Old Church Slavonic, Church Slavic, Church Slavonic, Old Bulgarian, Old Slavonic", "cu"),
-            ("Oromo", "om"),
-            ("Oriya", "or"),
-            ("Ossetian, Ossetic", "os"),
-            ("Panjabi, Punjabi", "pa"),
-            ("Pali", "pi"),
-            ("Persian", "fa"),
-            ("Polish", "pl"),
-            ("Pashto, Pushto", "ps"),
-            ("Portuguese", "pt"),
-            ("Quechua", "qu"),
-            ("Romansh", "rm"),
-            ("Kirundi", "rn"),
-            ("Russian", "ru"),
-            ("Sanskrit", "sa"),
-            ("Sardinian", "sc"),
-            ("Sindhi", "sd"),
-            ("Northern Sami", "se"),
-            ("Samoan", "sm"),
-            ("Sango", "sg"),
-            ("Serbian", "sr"),
-            ("Gaelic, Scottish Gaelic", "gd"),
-            ("Shona", "sn"),
-            ("Sinhalese, Sinhala", "si"),
-            ("Slovak", "sk"),
-            ("Slovene", "sl"),
-            ("Somali", "so"),
-            ("Southern Sotho", "st"),
-            ("Spanish", "es"),
-            ("Sundanese", "su"),
-            ("Swahili", "sw"),
-            ("Swati", "ss"),
-            ("Swedish", "sv"),
-            ("Tamil", "ta"),
-            ("Telugu", "te"),
-            ("Tajik", "tg"),
-            ("Thai", "th"),
-            ("Tigrinya", "ti"),
-            ("Tibetan", "bo"),
-            ("Turkmen", "tk"),
-            ("Tagalog", "tl"),
-            ("Tswana", "tn"),
-            ("Tonga (Tonga Islands)", "to"),
-            ("Turkish", "tr"),
-            ("Tsonga", "ts"),
-            ("Tatar", "tt"),
-            ("Twi", "tw"),
-            ("Tahitian", "ty"),
-            ("Uighur, Uyghur", "ug"),
-            ("Ukrainian", "uk"),
-            ("Urdu", "ur"),
-            ("Uzbek", "uz"),
-            ("Venda", "ve"),
-            ("Vietnamese", "vi"),
-            ("Volapük", "vo"),
-            ("Walloon", "wa"),
-            ("Welsh", "cy"),
-            ("Wolof", "wo"),
-            ("Western Frisian", "fy"),
-            ("Xhosa", "xh"),
-            ("Yiddish", "yi"),
-            ("Yoruba", "yo"),
-            ("Zhuang, Chuang", "za"),
-            ("Zulu", "zu")
-        ]
-        lang: tuple[str, str] = random.choice(iso_639_languages)
+        lang: tuple[str, str] = random.choice(ISO_639_LANGUAGES)
         return {
             'code': lang[1].upper(),
             'description': lang[0],
@@ -437,28 +107,7 @@ class IndividualProvider(BaseProvider):
         return list_languages if english_exist else list_languages + [english]
 
     def practitioner_ethnicity_code(self) -> dict:
-        ethnicity: dict = {
-            "0": "UNKNOWN/NOT DISCLOSED",
-            "1": "WHITE (CAUCASIAN)",
-            "2": "HISPANIC/LATINO",
-            "3": "BLACK (AFRICAN AMERICAN)",
-            "4": "ASIAN/PACIFIC ISLANDER",
-            "5": "AMERICAN INDIAN/ALASKAN",
-            "7": "FILIPINO",
-            "A": "AMERASIAN",
-            "C": "CHINESE",
-            "H": "CAMBODIAN",
-            "J": "JAPANESE",
-            "K": "KOREAN",
-            "M": "SAMOAN",
-            "N": "ASIAN INDIAN",
-            "P": "HAWAIIAN",
-            "R": "GUAMANIAN",
-            "T": "LAOTIAN",
-            "V": "VIETNAMESE",
-            "Z": "OTHER",
-        }
-        random_key, random_value = random.choice(list(ethnicity.items()))
+        random_key, random_value = random.choice(list(ETHNICITY.items()))
         return {
             'code': random_key,
             'description': random_value
@@ -473,124 +122,96 @@ class IndividualProvider(BaseProvider):
             ]))
 
     def malpractice(self) -> dict:
-        malpractice_insurance = [
-            "Admiral Insurance Company",
-            "The Doctor's Company",
-            "The Doctors Company",
-            "HRSA (Federal Torts Claim Act)",
-            "NORCAL Mutual Insurance Company",
-            "Norcal Mutual Insurance Co",
-            "Cooperative of American Physicians",
-            "Lancet Indemnity Insurance",
-            "Beta Healthcare Group",
-            "General Star Indemnity Company",
-            "OMIC Ophthalmic Mutual Insurance Company",
-            "Cooperative of American Physicians, Inc.",
-            "Doctor's Company Insurance Group",
-            "Fairway Physicians Ins. Co.",
-            "Medical Protective Company",
-            "Accord",
-            "United States Liability Insurance Company",
-            "Hallmark Specialty Insurance Company",
-            "COOPERATIVE  OF AMERICAN PHYSICIANS",
-            "CAP/MPT",
-            "Lancet Indemnity, RRG",
-            "CARE Risk Retention Group, INC",
-            "Landmark American Insurance Co.",
-            "Desert Mountain Insurance Services, Inc.",
-            "AMS Risk Retention Group Inc.",
-            "AMS Risk Retention Group",
-            "AMS Risk Retention Group Inc.",
-            "AMS Risk Retention Group Inc.",
-            "Superior Malpractice Insurance Services, Inc.",
-            "Ophthalmic Mutual Ins Co Rrg",
-            "Medical Insurance Exchange of California",
-            "Applied Medico-Legal Solutions RRG, Inc.",
-            "Preferred Professional Insurance Company",
-            "PPIC Insurance",
-            "Liberty Insurance Underwriters Inc.",
-            "BETA HealthCare Group",
-            "American Casualty Company of Reading, PA",
-            "NORCAL MUTUAL INSURANCE COMPANY",
-            "Mutual Protection Trust",
-            "Nurses Service Organization - CNA",
-            "Mutual Protection Trust",
-            "The Medical Protective Company",
-            "MUTUAL PROTECTION TRUST",
-            "Steadfast Ins Co",
-            "PICA Mutual INS Company",
-            "Podiatry Insurance Company of America",
-            "PICA Treated Fairly",
-            "The Podiatry Insurance Company of America",
-            "Mercer Consumer",
-        ]
         return {
-            'insurance': random.choice(malpractice_insurance),
+            'insurance': random.choice(MALPRACTICE_INSURANCE),
             'insurance_policy_number': self.generator.random_number(fix_len=True),
             'covered_amount': f" {self.generator.random_int(min=0, max=9)}-{self.generator.random_int(min=0, max=9)}",
         }
 
     def license(self) -> dict:
-        us_states = [
-            "Alabama",
-            "Alaska",
-            "Arizona",
-            "Arkansas",
-            "California",
-            "Colorado",
-            "Connecticut",
-            "Delaware",
-            "Florida",
-            "Georgia",
-            "Hawái",
-            "Idaho",
-            "Illinois",
-            "Indiana",
-            "Iowa",
-            "Kansas",
-            "Kentucky",
-            "Luisiana",
-            "Maine",
-            "Maryland",
-            "Massachusetts",
-            "Míchigan",
-            "Minnesota",
-            "Misisipi",
-            "Misuri",
-            "Montana",
-            "Nebraska",
-            "Nevada",
-            "Nuevo Hampshire",
-            "Nueva Jersey",
-            "Nuevo México",
-            "Nueva York",
-            "Carolina del Norte",
-            "Dakota del Norte",
-            "Ohio",
-            "Oklahoma",
-            "Oregón",
-            "Pensilvania",
-            "Rhode Island",
-            "Carolina del Sur",
-            "Dakota del Sur",
-            "Tennessee",
-            "Texas",
-            "Utah",
-            "Vermont",
-            "Virginia",
-            "Washington",
-            "Virginia Occidental",
-            "Wisconsin",
-            "Wyoming",
-        ]
         start_date: date = self.generator.date_this_decade()
         return {
             'license': f'{self.generator.random_uppercase_letter()}{self.generator.random_number(digits=9)}',
-            'state': random.choice(us_states),
+            'state': random.choice(US_STATES),
             'is_primary': self.generator.boolean(),
             'start_date': start_date,
             'end_date': start_date + timedelta(365 * self.generator.random_int(min=1, max=4)),
         }
+
+    def identifier(self) -> dict:
+        return {
+            'code': self.generator.random_int(),
+            'desc': random.choice(['Other (non-Medicare)', 'Medicare']),
+            'issuer': self.generator.bothify(text='????'),
+            'identifier': self.generator.bothify(text='#####'),
+            'state': random.choice(US_STATES)
+        }
+
+    def board(self) -> dict:
+        start_date = self.generator.date_this_decade()
+        return {
+            'status': random.choice([1, 2, 3, 4, 5]),
+            'start_date': start_date,
+            'expiration_date': start_date + timedelta(365 * self.generator.random_int(min=1, max=4)),
+        }
+
+    def taxonomy_qualification(self, taxonomy: dict | None = None) -> dict:
+        start_date = self.generator.date_this_decade()
+        qualification = {'board': self.board(), 'intership_start_date': start_date,
+                         'intership_expiration_date': start_date + timedelta(
+                             365 * self.generator.random_int(min=1, max=4)), 'residency_start_date': start_date,
+                         'residency_expiration_date': start_date + timedelta(
+                             365 * self.generator.random_int(min=1, max=4)), 'fellowship_start_date': start_date,
+                         'fellowship_expiration_date': start_date + timedelta(
+                             365 * self.generator.random_int(min=1, max=4)),
+                         'taxonomy': self.taxonomy() if taxonomy is None else taxonomy, 'facility_type': 10}
+        return qualification
+
+    def endpoint(self) -> dict:
+        content = random.choice(['OTHER', 'CSV'])
+        content_other_description = random.choice(ENDPOINT_CONTENT_OTHER_DESCRIPTION)
+        endpoint_code: str = random.choice(list(ENDPOINT_TYPE.keys()))
+        use_code: str = random.choice(list(ENDPOINT_USE.keys()))
+        return {
+            'endpointType': endpoint_code,
+            'endpointTypeDescription': ENDPOINT_TYPE[endpoint_code],
+            'endpoint': self.generator.ascii_company_email() if endpoint_code == 'DIRECT' else self.generator.uri(),
+            'endpointDescription': '',
+            'affiliation': random.choice(['Y', 'N']),
+            'use': use_code,
+            'useDescription': ENDPOINT_USE[use_code],
+            'contentType': content,
+            'contentTypeDescription': content_other_description,
+            'contentOtherDescription': content_other_description,
+            'country_code': 'US',
+            'country_name': 'United States',
+            'address_1': self.generator.address(),
+            'city': self.generator.city(),
+            'state': random.choice(US_STATES),
+            'postal_code': self.generator.postcode(),
+        }
+
+    def working_hours(self) -> str:
+        start_hour = self.generator.random_int(min=7, max=10)
+        end_hour = self.generator.random_int(min=start_hour + 2, max=20)
+        return f'{start_hour}:00-{end_hour}:00'
+
+    def weekly_working_hours(self) -> dict:
+        return {
+            'Monday': self.working_hours(),
+            'Tuesday': self.working_hours(),
+            'Wednesday': self.working_hours(),
+            'Thursday': self.working_hours(),
+            'Friday': self.working_hours(),
+            'Saturday': random.choice(['CLOSED', self.working_hours()]),
+            'Sunday': 'CLOSED',
+        }
+
+    def __taxonomy_qualification_by_taxonomies(self, taxomonies: List[dict]) -> List[dict]:
+        qualifications: List[dict] = []
+        for taxonomy in taxomonies:
+            qualifications.append(self.taxonomy_qualification(taxonomy))
+        return qualifications
 
     def individual_object(self) -> dict:
         gender = self.gender()
@@ -598,9 +219,12 @@ class IndividualProvider(BaseProvider):
         last_updated_epoch: date = self.generator.date_this_decade()
         created_epoch = last_updated_epoch - timedelta(365 * self.generator.random_int(min=1, max=4))
         languages = self.practitioner_languages_plus_english(6)
-        credential = random.choice(["DMD", "PhD", "MD", "Dr"])
+        credential = random.choice(CREDENTIAL)
         sole_proprietor = random.choice(["YES", "NO"])
         ethnicity_code = self.practitioner_ethnicity_code()['code']
+        identifier = self.identifier()
+        taxonomies: List[dict] = self.individual_unique_taxonomies(4)
+        taxonomy_qualification = self.__taxonomy_qualification_by_taxonomies(taxonomies)
         return {
             'npi': self.npi(),
             'tin': self.tin(),
@@ -613,12 +237,13 @@ class IndividualProvider(BaseProvider):
             "mailing_address": self.address_with_purpose(),
             "location_address": self.address_with_purpose(purpose='LOCATION'),
             "main_office_address": self.address_with_purpose(purpose='Main Office'),
-            "taxonomies": self.individual_unique_taxonomies(4),
-            "licenses": [self.license() for _ in range(4)],
-            "identifiers": "",
-            "taxonomy_qualification": "",
-            "taxonomy_endpoints": "",
-            "schedule": "",
+            "taxonomies": taxonomies,
+            "licenses": [self.license() for _ in range(9)],
+            "identifiers": identifier,
+            "taxonomy_qualification": taxonomy_qualification,
+            "taxonomy_endpoints": self.endpoint(),
+            "office_hours": self.weekly_working_hours(),
+            "telehealth_hours": self.weekly_working_hours(),
             'credential': credential,
             'sole_proprietor': sole_proprietor,
             'gender': gender,
@@ -636,13 +261,11 @@ class IndividualProvider(BaseProvider):
 
 fake = Faker()
 fake.add_provider(IndividualProvider)
-Faker.seed(123)
+Faker.seed(153)
 
-
-print(fake.license())
+print(fake.weekly_working_hours())
 
 fake_person_names = [fake.individual_object() for _ in range(1)]
 for i in fake_person_names:
     print(i)
     print(i['taxonomies'])
-
