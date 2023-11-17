@@ -3,13 +3,14 @@ from datetime import date
 
 from faker import Faker
 
-from faker_healthcare_system.provider_individual import IndividualProvider
+from faker_healthcare_system import IndividualProvider, PersonNameProvider
 
 
 @pytest.fixture
 def fake():
     fake_instance = Faker()
     fake_instance.add_provider(IndividualProvider)
+    fake_instance.add_provider(PersonNameProvider)
     return fake_instance
 
 

@@ -1,7 +1,7 @@
 import pytest
 from faker import Faker
 
-from faker_healthcare_system.person_name import PersonNameProvider
+from faker_healthcare_system import PersonNameProvider
 
 
 @pytest.fixture
