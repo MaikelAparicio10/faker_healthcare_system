@@ -6,7 +6,7 @@ from typing import List
 from faker import Faker
 from faker.providers import BaseProvider
 
-from faker_healthcare_system.taxonomy_generator import TaxonomyGenerator
+from taxonomy_generator import TaxonomyGenerator
 
 
 class IndividualProvider(BaseProvider):
@@ -670,7 +670,7 @@ class IndividualProvider(BaseProvider):
             "location_address": self.address_with_purpose(purpose='LOCATION'),
             "main_office_address": self.address_with_purpose(purpose='Main Office'),
             "taxonomies": taxonomies,
-            "licenses": [self.license() for _ in range(4)],
+            "licenses": [self.license() for _ in range(9)],
             "identifiers": identifier,
             "taxonomy_qualification": taxonomy_qualification,
             "taxonomy_endpoints": self.endpoint(),

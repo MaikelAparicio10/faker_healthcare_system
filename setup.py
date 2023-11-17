@@ -34,7 +34,7 @@ CLASSIFIERS = [
 
 setup(
     name='faker_healthcare_system',
-    version='0.1.9',
+    version='0.1.13',
     license='MIT',
     description='Health system related data provider for Faker module',
     long_description=README,
