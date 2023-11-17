@@ -1,7 +1,7 @@
 import csv
 import importlib.resources
 import random
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 from typing import List, Optional
 
 
@@ -51,9 +51,6 @@ class TaxonomyGenerator:
     def get_individuals_taxonomy_codes(self) -> List[str]:
         return list(self.taxonomy_individual_data.keys())
 
-    def get_taxonomy_codes_by_individuals(self) -> List[str]:
-        return list(self.taxonomy_data.keys())
-
     def find_by_code(self, code: str) -> Optional[TaxonomyEntity]:
         return self.taxonomy_data.get(code, None)
 
@@ -63,14 +60,8 @@ class TaxonomyGenerator:
     def get_random_individual_taxonomy(self) -> TaxonomyEntity:
         return self.find_by_code(random.choice(self.get_individuals_taxonomy_codes()))
 
-    def get_taxonomies(self, quantity: int) -> List[TaxonomyEntity]:
-        return [self.get_random_taxonomy() for _ in range(quantity)]
-
-    def get_taxonomies_individuals(self, quantity: int) -> List[TaxonomyEntity]:
-        return [self.get_random_individual_taxonomy() for _ in range(quantity)]
-
     def get_uniques_taxonomies_individuals(self, quantity: int) -> List[dict]:
         unique_taxonomies = set()
         while len(unique_taxonomies) < quantity:
             unique_taxonomies.add(self.get_random_individual_taxonomy())
-        return [taxonomy.__dict__ for taxonomy in list(unique_taxonomies)]
+        return [asdict(taxonomy) for taxonomy in list(unique_taxonomies)]

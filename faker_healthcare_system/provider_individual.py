@@ -6,9 +6,10 @@ from typing import List
 from faker import Faker
 from faker.providers import BaseProvider
 
-from faker_healthcare_system import TaxonomyGenerator, ADDRESS_TYPE, MEDICAL_UNIVERSITIES_USA, ISO_639_LANGUAGES, \
-    ETHNICITY, \
-    MALPRACTICE_INSURANCE, ENDPOINT_TYPE, ENDPOINT_USE, ENDPOINT_CONTENT_OTHER_DESCRIPTION, CREDENTIAL, US_STATES
+from taxonomy_generator import TaxonomyGenerator
+from constants import ADDRESS_TYPE, MEDICAL_UNIVERSITIES_USA, ISO_639_LANGUAGES, \
+    ETHNICITY, MALPRACTICE_INSURANCE, ENDPOINT_TYPE, ENDPOINT_USE, ENDPOINT_CONTENT_OTHER_DESCRIPTION, CREDENTIAL, \
+    US_STATES
 
 
 class IndividualProvider(BaseProvider):
@@ -30,8 +31,8 @@ class IndividualProvider(BaseProvider):
         return self.__taxonomy.get_random_taxonomy().__dict__
 
     def individual_taxonomies(self, quantity: int) -> List[dict]:
-        taxonomies_list = self.__taxonomy.get_taxonomies_individuals(quantity)
-        return [tax.__dict__ for tax in taxonomies_list]
+        taxonomies_list = self.__taxonomy.get_uniques_taxonomies_individuals(quantity)
+        return [tax for tax in taxonomies_list]
 
     def individual_unique_taxonomies(self, quantity: int):
         return self.__taxonomy.get_uniques_taxonomies_individuals(quantity)
@@ -245,9 +246,9 @@ fake = Faker()
 fake.add_provider(IndividualProvider)
 Faker.seed(153)
 
-print(fake.board())
+print(fake.individual_taxonomies(1))
 
 fake_person_names = [fake.individual_object() for _ in range(1)]
 for i in fake_person_names:
     print(i)
-    print(i['taxonomy_endpoints'])
+    print(i['taxonomies'])
