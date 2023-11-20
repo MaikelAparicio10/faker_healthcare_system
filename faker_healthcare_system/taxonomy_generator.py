@@ -16,7 +16,7 @@ class TaxonomyEntity:
 
 
 class TaxonomyGenerator:
-    TAXONOMY_CSV_DIR = importlib.resources.files('assets') / 'nucc_taxonomy_231.csv'
+    TAXONOMY_CSV_DIR = importlib.resources.files("assets") / "nucc_taxonomy_231.csv"
 
     def __init__(self):
         self.taxonomy_data, self.taxonomy_individual_data = self.load_taxonomy_data()
@@ -38,7 +38,7 @@ class TaxonomyGenerator:
                         display_name=row[6],
                         section=row[7],
                     )
-                    if taxonomy.section.lower() == 'individual':
+                    if taxonomy.section.lower() == "individual":
                         taxonomy_only_individual_data[code] = taxonomy
                     taxonomy_data[code] = taxonomy
         except FileNotFoundError:

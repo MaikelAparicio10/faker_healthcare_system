@@ -194,7 +194,10 @@ ISO_639_LANGUAGES = [
     ("South Ndebele", "nr"),
     ("Occitan", "oc"),
     ("Ojibwe, Ojibwa", "oj"),
-    ("Old Church Slavonic, Church Slavic, Church Slavonic, Old Bulgarian, Old Slavonic", "cu"),
+    (
+        "Old Church Slavonic, Church Slavic, Church Slavonic, Old Bulgarian, Old Slavonic",
+        "cu",
+    ),
     ("Oromo", "om"),
     ("Oriya", "or"),
     ("Ossetian, Ossetic", "os"),
@@ -257,7 +260,7 @@ ISO_639_LANGUAGES = [
     ("Yiddish", "yi"),
     ("Yoruba", "yo"),
     ("Zhuang, Chuang", "za"),
-    ("Zulu", "zu")
+    ("Zulu", "zu"),
 ]
 ETHNICITY: dict = {
     "0": "UNKNOWN/NOT DISCLOSED",
@@ -332,18 +335,27 @@ MALPRACTICE_INSURANCE = [
     "Mercer Consumer",
 ]
 ENDPOINT_TYPE = {
-    'DIRECT': 'Direct Messaging Address',
-    'CONNECT': 'CONNECT URL',
-    'OTHERS': 'Other URL',
-    'FHIR': 'FHIR URL',
-    'SOAP': 'SOAP URL',
+    "DIRECT": "Direct Messaging Address",
+    "CONNECT": "CONNECT URL",
+    "OTHERS": "Other URL",
+    "FHIR": "FHIR URL",
+    "SOAP": "SOAP URL",
 }
 ENDPOINT_USE = {
-    'DIRECT': 'Direct',
-    'HIE': 'Health Information Exchange (HIE)',
-    'OTHER': 'Other'
+    "DIRECT": "Direct",
+    "HIE": "Health Information Exchange (HIE)",
+    "OTHER": "Other",
 }
-ENDPOINT_CONTENT_OTHER_DESCRIPTION = ['OTHER', 'CSV', 'EMAIL', 'Communication', 'Standard Direct Functionality',
-                                      'unknown', 'website',
-                                      'CDA/CCD/TXT', 'CDA/PDF/TXT', 'Excel file']
-CREDENTIAL= ["DMD", "PhD", "MD", "Dr"]
+ENDPOINT_CONTENT_OTHER_DESCRIPTION = [
+    "OTHER",
+    "CSV",
+    "EMAIL",
+    "Communication",
+    "Standard Direct Functionality",
+    "unknown",
+    "website",
+    "CDA/CCD/TXT",
+    "CDA/PDF/TXT",
+    "Excel file",
+]
+CREDENTIAL = ["DMD", "PhD", "MD", "Dr"]
