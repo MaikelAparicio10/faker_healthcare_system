@@ -1,6 +1,3 @@
-import random
-
-from faker import Faker
 from faker.providers import BaseProvider
 
 

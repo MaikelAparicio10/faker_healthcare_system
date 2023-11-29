@@ -356,8 +356,6 @@ F
 }
 ```
 
-
-
 ### Individual
 ``` python
 >> fake.individual_object()
@@ -522,3 +520,192 @@ F
     }
 ```
 
+### Organizations
+#### Generate an organization with the specified number of NPI, default is 1.
+``` python
+>> fake.organization_object(max_npi=3)
+{
+    'npi': [321598958, 928109630, 366741961], 
+    'tin': 711175146, 
+    'last_updated_epoch': datetime.date(2021, 1, 24), 
+    'created_epoch': datetime.date(2019, 1, 25), 
+    'enumeration_date': datetime.date(2020, 5, 6), 
+    'status': 'Active', 
+    'email': 'deborahwest@example.net', 
+    'enumeration_type': 'NPI-2', 
+    'mailing_address': {
+                        'country_code': 'US', 
+                        'country_name': 'United States', 
+                        'purpose': 'Mailing', 
+                        'address_type': 'MIL', 
+                        'address_1': '2594 Dunn Radial\nWest Jennifermouth, NM 55692', 
+                        'address_2': '78773 Powers Greens\nRosehaven, DC 42074', 
+                        'city': 'New Chadtown', 
+                        'state': 'Nebraska', 
+                        'postal_code': '16089', 
+                        'telephone_number': '306-999-1768x365', 
+                        'fax_number': '483.589.1410x715'
+                        }, 
+    'location_address': {
+                        'country_code': 'US', 
+                        'country_name': 'United States', 
+                        'purpose': 'LOCATION', 
+                        'address_type': 'DOM', 
+                        'address_1': '305 Michelle Key Apt. 304\nWest Kellyberg, CT 16549', 
+                        'address_2': '1063 Smith Lake Apt. 999\nNixonberg, WA 28039', 
+                        'city': 'Port Timothy', 
+                        'state': 'Maryland', 
+                        'postal_code': '21290', 
+                        'telephone_number': '807.472.1198x8935', 
+                        'fax_number': '001-935-380-7717x264'
+                        }, 
+    'main_office_address': {
+                            'country_code': 'US', 
+                            'country_name': 'United States', 
+                            'purpose': 'Main Office', 
+                            'address_type': 'Physical', 
+                            'address_1': '981 John Road\nRobertmouth, FL 10531', 
+                            'address_2': '13237 Karen Village Apt. 024\nPort Beverlytown, ME 46029', 
+                            'city': 'Benjamintown', 
+                            'state': 'Luisiana', 
+                            'postal_code': '16387', 
+                            'telephone_number': '623-739-8700x2088', 
+                            'fax_number': '545.882.9199'
+                            }, 
+    'taxonomies': [
+                    {
+                        'code': '1835N1003X', 
+                        'classification': 'Pharmacist', 
+                        'specialization': 'Nutrition Support', 
+                        'section': 'Individual', 
+                        'grouping': 
+                        'Pharmacy Service Providers', 
+                        'display_name': 'Nutrition Support Pharmacist'
+                    }, 
+                    {
+                        'code': '208G00000X', 
+                        'classification': 'Thoracic Surgery (Cardiothoracic Vascular Surgery)', 
+                        'specialization': '', 
+                        'section': 'Individual', 
+                        'grouping': 'Allopathic & Osteopathic Physicians', 
+                        'display_name': 'Thoracic Surgery (Cardiothoracic Vascular Surgery) Physician'
+                    }, 
+                    {
+                        'code': '364SI0800X', 
+                        'classification': 'Clinical Nurse Specialist', 
+                        'specialization': 'Informatics', 
+                        'section': 'Individual', 
+                        'grouping': 'Physician Assistants & Advanced Practice Nursing Providers', 
+                        'display_name': 'Informatics Clinical Nurse Specialist'
+                    }, 
+                    {
+                        'code': '364SW0102X', 
+                        'classification': 'Clinical Nurse Specialist', 
+                        'specialization': "Women's Health", 
+                        'section': 'Individual', 
+                        'grouping': 'Physician Assistants & Advanced Practice Nursing Providers', 
+                        'display_name': "Women's Health Clinical Nurse Specialist"
+                    }
+                 ], 
+    'licenses': 
+                [
+                    {
+                        'license': 'Z188552678', 
+                        'state': 'Pensilvania', 
+                        'is_primary': True, 
+                        'start_date': datetime.date(2020, 12, 11), 
+                        'end_date': datetime.date(2024, 12, 10)
+                    }, 
+                    {
+                        'license': 'M184632866', 
+                        'state': 'Nuevo México', 
+                        'is_primary': True, 
+                        'start_date': datetime.date(2023, 5, 8), 
+                        'end_date': datetime.date(2026, 5, 7)
+                    }, 
+                    {
+                        'license': 'U460102758', 
+                        'state': 'Kansas', 
+                        'is_primary': True, 
+                        'start_date': datetime.date(2023, 2, 26), 
+                        'end_date': datetime.date(2024, 2, 26)
+                    }, 
+                    {
+                        'license': 'D68435211', 
+                        'state': 'Oregón', 
+                        'is_primary': True, 
+                        'start_date': datetime.date(2020, 9, 18), 
+                        'end_date': datetime.date(2022, 9, 18)
+                    }, 
+                    {
+                        'license': 'D918869194', 
+                        'state': 'Delaware', 
+                        'is_primary': False, 
+                        'start_date': datetime.date(2022, 9, 15), 
+                        'end_date': datetime.date(2026, 9, 14)
+                    }, 
+                    {
+                        'license': 'C10973103', 
+                        'state': 'Arizona', 
+                        'is_primary': False, 
+                        'start_date': datetime.date(2022, 12, 18), 
+                        'end_date': datetime.date(2026, 12, 17)
+                    }, 
+                    {
+                        'license': 'P188687644', 
+                        'state': 'Washington', 
+                        'is_primary': True, 
+                        'start_date': datetime.date(2021, 4, 27), 
+                        'end_date': datetime.date(2023, 4, 27)
+                    }, 
+                    {
+                        'license': 'Z755492445', 
+                        'state': 'Colorado', 
+                        'is_primary': True, 
+                        'start_date': datetime.date(2022, 3, 12), 
+                        'end_date': datetime.date(2026, 3, 11)
+                    }, 
+                    {
+                        'license': 'R671526523', 
+                        'state': 'Nebraska', 
+                        'is_primary': True, 
+                        'start_date': datetime.date(2020, 8, 9), 
+                        'end_date': datetime.date(2022, 8, 9)
+                    }
+                ], 
+    'identifiers': {
+                    'code': 5691, 
+                    'desc': 'Medicare', 
+                    'issuer': 'TWsd', 
+                    'identifier': '56720', 
+                    state': 'Misuri'
+                    }, 
+    'credential': 'DMD', 
+    'sole_proprietor': 'NO', 
+    'gender': 'F', 
+    'personal_name': 
+                    {
+                        'first_name': 'Sara', 
+                        'last_name': 'Pratt', 
+                        'name_prefix': 'Mrs.', 
+                        'name_suffix': 'DDS', 
+                        'type_name': 'Personal Name'
+                    }, 
+    'other_names': '', 
+    'dea': 
+            {
+            'number': 'A8778730', 
+            'allow_prescribe': False, 
+            'start_date': datetime.date(2023, 9, 4), 
+            'expiration_date': datetime.date(2026, 9, 3), 
+            'supervising_number': 'Y6652962', 
+            'supervising_license': 9123515
+            }, 
+    'ethnicity_code': '', 
+    'date_of_birth': '', 
+    'languages': [
+                    {
+                        'code': 'KO', 
+                        'description': 'Korean', 
+                        'language_type': 'Practitioner'}, {'code': 'CS', 'description': 'Czech', 'language_type': 'Practitioner'}, {'code': 'KW', 'description': 'Cornish', 'language_type': 'Practitioner'}, {'code': 'GA', 'description': 'Irish', 'language_type': 'Practitioner'}, {'code': 'CV', 'description': 'Chuvash', 'language_type': 'Practitioner'}, {'code': 'AR', 'description': 'Arabic', 'language_type': 'Practitioner'}, {'code': 'en', 'description': 'English', 'language_type': 'Practitioner'}], 'gender_restriction': '', 'malpractice': {'insurance': 'NORCAL Mutual Insurance Company', 'insurance_policy_number': 164, 'covered_amount': ' 4-4'}, 'professional_degree_school': '', 'organization_name': 'Rivera-Meyer', 'organization_subpart': 'YES', 'organization_type': 'Official', 'person_authorized': 'Ashley Rios', 'person_authorized_title_or_position': 'EXECUTIVE DIRECTOR', 'other_organization_name_1': 'Robertson, Boyd and Hall', 'other_organization_subpart_1': 'NO', 'other_organization_type_1': 'Official', 'other_organization_name_2': 'Gibson-Gentry', 'other_organization_subpart_2': 'YES', 'other_organization_type_2': 'Official', 'pcmh_status': 3}
+```

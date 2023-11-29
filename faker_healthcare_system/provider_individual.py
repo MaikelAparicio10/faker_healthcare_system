@@ -18,6 +18,7 @@ from constants import (
     ENDPOINT_CONTENT_OTHER_DESCRIPTION,
     CREDENTIAL,
     US_STATES,
+    OFFICIAL_TITLE_POSITION,
 )
 
 
@@ -62,6 +63,9 @@ class IndividualProvider(BaseProvider):
             else self.generator.suffix_male(),
             "type_name": "Personal Name",
         }
+
+    def fullname(self):
+        return f"{self.generator.first_name()} {self.generator.last_name()}"
 
     def person_married_name(self, person_object: dict) -> dict:
         new_last_name = self.generator.last_name_male()
@@ -241,6 +245,9 @@ class IndividualProvider(BaseProvider):
             "Sunday": "CLOSED",
         }
 
+    def organization_type(self):
+        return random.choice(["Official", "Doing Business As"])
+
     def __taxonomy_qualification_by_taxonomies(
         self, taxomonies: List[dict]
     ) -> List[dict]:
@@ -297,3 +304,76 @@ class IndividualProvider(BaseProvider):
             "malpractice": self.malpractice(),
             "professional_degree_school": self.professional_degree_school(),
         }
+
+    def organization_object(self, max_npi: int = 1) -> dict:
+        npi = self.npi() if max_npi == 1 else [self.npi() for _ in range(max_npi)]
+        gender = self.gender()
+        person_name: dict = self.generator.person_name_by_gender(gender)
+        person_authorized: str = self.generator.fullname()
+        last_updated_epoch: date = self.generator.date_this_decade()
+        created_epoch = last_updated_epoch - timedelta(
+            365 * self.generator.random_int(min=1, max=4)
+        )
+        languages = self.practitioner_languages_plus_english(6)
+        credential = random.choice(CREDENTIAL)
+        sole_proprietor = random.choice(["YES", "NO"])
+        identifier = self.identifier()
+        taxonomies: List[dict] = self.individual_unique_taxonomies(4)
+        return {
+            "npi": npi,
+            "tin": self.tin(),
+            "last_updated_epoch": last_updated_epoch,
+            "created_epoch": created_epoch,
+            "enumeration_date": self.enumeration_date(),
+            "status": "Active",
+            "email": self.generator.email(),
+            "enumeration_type": "NPI-2",
+            "mailing_address": self.address_with_purpose(),
+            "location_address": self.address_with_purpose(purpose="LOCATION"),
+            "main_office_address": self.address_with_purpose(purpose="Main Office"),
+            "taxonomies": taxonomies,
+            "licenses": [self.license() for _ in range(9)],
+            "identifiers": identifier,
+            # "taxonomy_qualification": '',
+            # "taxonomy_endpoints": '',
+            # "office_hours": '',
+            # "telehealth_hours": '',
+            "credential": credential,
+            "sole_proprietor": sole_proprietor,
+            "gender": gender,
+            "personal_name": person_name,
+            "other_names": "",
+            "dea": self.dea(),
+            "ethnicity_code": "",
+            "date_of_birth": "",
+            "languages": languages,
+            "gender_restriction": "",
+            "malpractice": self.malpractice(),
+            "professional_degree_school": "",
+            "organization_name": self.generator.company(),
+            "organization_subpart": random.choice(["YES", "NO"]),
+            "organization_type": self.organization_type(),
+            "person_authorized": person_authorized,
+            "person_authorized_title_or_position": random.choice(
+                OFFICIAL_TITLE_POSITION
+            ),
+            "other_organization_name_1": self.generator.company(),
+            "other_organization_subpart_1": random.choice(["YES", "NO"]),
+            "other_organization_type_1": self.organization_type(),
+            "other_organization_name_2": self.generator.company(),
+            "other_organization_subpart_2": random.choice(["YES", "NO"]),
+            "other_organization_type_2": self.organization_type(),
+            "pcmh_status": self.generator.random_int(min=1, max=4),
+        }
+
+
+fake = Faker()
+fake.add_provider(IndividualProvider)
+Faker.seed(153)
+
+print(fake.weekly_working_hours())
+
+fake_person_names = [fake.organization_object(max_npi=3) for _ in range(1)]
+for i in fake_person_names:
+    print(i)
+    print(i["npi"])
